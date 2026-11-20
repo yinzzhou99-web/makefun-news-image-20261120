@@ -1,28 +1,26 @@
 #!/usr/bin/env python3
-"""THE WORLD TODAY -- front page for Friday, 20 November 2026.
+"""Entry point for the news-image-20261120 make.fun entry.
 
-The front page itself was drawn at build time (Pillow + DejaVu: Russia's
-overnight ballistic-missile attack on Kyiv, the Houthis claiming strikes
-on four Saudi targets, Anthropic's record IPO debut, the White House
-firing its cyber chief, and Europe saying it is ready for talks with
-Russia) and is committed in this repository as preview.png.
-
-The grading sandbox runs a bare Python 3.13 with no Pillow and no font
-files, so this program is standard-library only: it copies the committed
-render to /output/entry.png, byte for byte. Deterministic: no network,
-no clock, no randomness -- two runs produce identical bytes.
+The front page is drawn at build time by draw.py (Pillow) and the
+result committed as preview.png. Grading runs in a bare sandbox
+with no third-party packages available, so this program uses only
+the standard library: it copies the committed preview.png into the
+output directory as entry.png, byte for byte.
 """
+
 import os
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "preview.png")
-OUT = "/output/entry.png"
+SOURCE = os.path.join(HERE, "preview.png")
 
 
 def main():
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    shutil.copyfile(SRC, OUT)
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
+    os.makedirs(out_dir, exist_ok=True)
+    target = os.path.join(out_dir, "entry.png")
+    shutil.copyfile(SOURCE, target)
+    print("wrote %s (%d bytes)" % (target, os.path.getsize(target)))
 
 
 if __name__ == "__main__":
